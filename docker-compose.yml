@@ -1,0 +1,63 @@
+
+services:
+
+  db-m1:
+    image: postgres:16
+    container_name: db-m1
+    environment:
+      POSTGRES_DB: clientes_db
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: laboratorio123
+    volumes:
+      - ./microservicio-m1/database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - datos-m1:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d clientes_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  db-m2:
+    image: postgres:16
+    container_name: db-m2
+    environment:
+      POSTGRES_DB: productos_db
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: laboratorio123
+    volumes:
+      - ./microservicio-m2/database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - datos-m2:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d productos_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  m2:
+    build: ./microservicio-m2
+    container_name: microservicio-m2
+    environment:
+      DATABASE_URL: postgresql://admin:laboratorio123@db-m2:5432/productos_db
+    ports:
+      - "8001:8000"
+    depends_on:
+      db-m2:
+        condition: service_healthy
+
+  m1:
+    build: ./microservicio-m1
+    container_name: microservicio-m1
+    environment:
+      DATABASE_URL: postgresql://admin:laboratorio123@db-m1:5432/clientes_db
+      M2_URL: http://m2:8000
+    ports:
+      - "8000:8000"
+    depends_on:
+      db-m1:
+        condition: service_healthy
+      m2:
+        condition: service_started
+
+volumes:
+  datos-m1:
+  datos-m2:
