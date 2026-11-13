@@ -72,7 +72,7 @@ El laboratorio está compuesto por cuatro contenedores principales:
 
 **Nota:** M2 utiliza internamente el puerto 8000, pero se publica en el puerto 8001 de la máquina anfitriona. M1 se publica en el puerto 8000.
 
-## 🛠️ Tecnologías utilizadas
+## Tecnologías utilizadas
 
 | Tecnología | Uso |
 |---|---|
@@ -123,7 +123,7 @@ laboratorio-microservicios/
 - `main.py`: implementa los endpoints y la lógica de cada API.
 - `init.sql`: crea las tablas e inserta los registros iniciales.
 
-## ⚙️ Funcionamiento de los microservicios
+##  Funcionamiento de los microservicios
 
 ### 1. Microservicio M1 - Clientes
 
